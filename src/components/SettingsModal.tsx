@@ -29,37 +29,38 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               value={key}
               onChange={(e) => setKey(e.target.value)}
               placeholder="sk-ant-..."
-              style={{ paddingRight: '60px' }}
+              style={{ paddingRight: '52px' }}
             />
             <button
               onClick={() => setShowKey(!showKey)}
               style={{
                 position: 'absolute',
-                right: '8px',
+                right: '10px',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 background: 'none',
                 border: 'none',
-                color: 'var(--text-secondary)',
-                fontSize: '12px',
+                color: 'var(--text-muted)',
+                fontSize: '11px',
                 fontWeight: 500,
+                cursor: 'pointer',
               }}
             >
               {showKey ? 'Hide' : 'Show'}
             </button>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '20px' }}>
           <span
             style={{
-              width: '8px',
-              height: '8px',
+              width: '6px',
+              height: '6px',
               borderRadius: '50%',
               background: hasKey ? 'var(--success)' : 'var(--danger)',
               display: 'inline-block',
             }}
           />
-          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
             {hasKey ? 'API key set' : 'No API key set'}
           </span>
         </div>

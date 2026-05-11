@@ -22,9 +22,12 @@ export function AboutYou() {
 
   return (
     <>
+      <div className="screen-header">
+        <h1>About You</h1>
+      </div>
       <HeroBanner
         title="Tell us about yourself"
-        subtitle="Add your personal context through text, files, or guided questions."
+        subtitle="Add your personal context through text, files, or guided questions. The more detail you provide, the richer your context profile."
       />
       <div className="screen-content">
         <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />

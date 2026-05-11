@@ -11,34 +11,34 @@ export function PersonCard({ person, onEdit, onDelete }: PersonCardProps) {
   const preview = person.personality || person.currentDynamic || ''
 
   return (
-    <div className="card" style={{ marginBottom: '12px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <strong style={{ fontSize: '15px' }}>{person.name}</strong>
+    <div className="list-item" style={{ cursor: 'pointer' }} onClick={onEdit}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: preview ? '4px' : 0 }}>
+          <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>{person.name}</span>
           <span className="pill">{person.relationship}</span>
         </div>
-        <div style={{ display: 'flex', gap: '4px' }}>
-          <button
-            className="btn btn-secondary"
-            style={{ padding: '4px 10px', fontSize: '12px' }}
-            onClick={onEdit}
-          >
-            Edit
-          </button>
-          <button
-            className="btn btn-danger"
-            style={{ padding: '4px 10px', fontSize: '12px' }}
-            onClick={onDelete}
-          >
-            Delete
-          </button>
-        </div>
+        {preview && (
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {preview}
+          </p>
+        )}
       </div>
-      {preview && (
-        <p style={{ marginTop: '8px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-          {preview.length > 120 ? preview.slice(0, 120) + '...' : preview}
-        </p>
-      )}
+      <div style={{ display: 'flex', gap: '4px', flexShrink: 0, marginLeft: '12px' }}>
+        <button
+          className="btn btn-secondary"
+          style={{ padding: '3px 10px', fontSize: '11px' }}
+          onClick={(e) => { e.stopPropagation(); onEdit() }}
+        >
+          Edit
+        </button>
+        <button
+          className="btn btn-danger"
+          style={{ padding: '3px 10px', fontSize: '11px' }}
+          onClick={(e) => { e.stopPropagation(); onDelete() }}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   )
 }

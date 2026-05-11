@@ -28,21 +28,21 @@ export function People() {
 
   return (
     <>
+      <div className="screen-header">
+        <h1>People</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => { setAdding(true); setEditingId(null) }}
+          disabled={adding}
+        >
+          Add new
+        </button>
+      </div>
       <HeroBanner
         title="The people in your world"
-        subtitle="Add the people who matter in your life to build richer context."
+        subtitle="Add the people who matter in your life to build richer context. Include relationship dynamics, communication styles, and what makes each person important."
       />
       <div className="screen-content">
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '24px' }}>
-          <button
-            className="btn btn-primary"
-            onClick={() => { setAdding(true); setEditingId(null) }}
-            disabled={adding}
-          >
-            Add new
-          </button>
-        </div>
-
         {adding && (
           <PersonForm
             onSave={handleSave}

@@ -1,31 +1,41 @@
 :root {
-  --sidebar-bg: #1a1a2e;
-  --sidebar-text: #b8b8cc;
-  --sidebar-text-active: #ffffff;
-  --sidebar-width: 220px;
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #F0F0F0;
+  --sidebar-text: #6B7280;
+  --sidebar-text-hover: #374151;
+  --sidebar-text-active: #111827;
+  --sidebar-active-bg: #F3F0FF;
+  --sidebar-width: 200px;
 
-  --hero-gradient: linear-gradient(135deg, #8B6914 0%, #5C3D0E 50%, #2D1B06 100%);
-  --hero-text: #FFF5E6;
+  --hero-gradient: linear-gradient(135deg, #C4944A 0%, #9A6B34 40%, #6B4423 70%, #3D2415 100%);
+  --hero-text: #FEF3E2;
 
-  --bg: #F8F7F4;
+  --bg: #FFFFFF;
+  --bg-secondary: #FAFAFA;
   --card-bg: #FFFFFF;
-  --card-border: #E5E5E5;
-  --card-radius: 8px;
+  --card-border: #F0F0F0;
+  --card-radius: 12px;
 
-  --accent: #7C5CFC;
-  --accent-hover: #6A4AE8;
-  --accent-light: rgba(124, 92, 252, 0.1);
+  --accent: #6C47FF;
+  --accent-hover: #5B38E8;
+  --accent-light: #F3F0FF;
+  --accent-text: #6C47FF;
 
-  --text-primary: #1a1a2e;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-light: #D1D5DB;
 
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 
-  --danger: #e53e3e;
-  --danger-hover: #c53030;
-  --success: #38a169;
+  --danger: #EF4444;
+  --danger-hover: #DC2626;
+  --success: #10B981;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -38,8 +48,10 @@ body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--text-primary);
-  line-height: 1.6;
+  line-height: 1.5;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -55,4 +67,21 @@ button {
 
 input, textarea, select {
   font-family: var(--font-body);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-light);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

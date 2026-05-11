@@ -43,9 +43,12 @@ export function Profile() {
 
   return (
     <>
+      <div className="screen-header">
+        <h1>Profile</h1>
+      </div>
       <HeroBanner
         title="Your Context Profile"
-        subtitle="A synthesized picture of who you are and your world."
+        subtitle="A synthesized picture of who you are and your world. Generate it from the information you've provided across About You and People."
       />
       <div className="screen-content">
         {!hasContent && !loading && (
@@ -73,12 +76,12 @@ export function Profile() {
             <button className="btn btn-primary btn-large" disabled>
               <span className="spinner" /> Generating...
             </button>
-            <div className="loading-shimmer" style={{ marginTop: '24px' }} />
+            <div className="loading-shimmer" style={{ marginTop: '20px' }} />
           </div>
         )}
 
         {error && (
-          <div style={{ color: 'var(--danger)', marginBottom: '16px', fontSize: '14px' }}>
+          <div style={{ color: 'var(--danger)', marginBottom: '16px', fontSize: '13px' }}>
             {error}
           </div>
         )}

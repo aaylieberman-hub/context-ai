@@ -1,30 +1,30 @@
 .profile-output {
-  max-width: 700px;
+  max-width: 680px;
 }
 
 .profile-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 16px;
   align-items: center;
 }
 
 .profile-actions .timestamp {
   margin-left: auto;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
 .profile-content {
   width: 100%;
   min-height: 400px;
-  padding: 24px;
+  padding: 20px;
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius);
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.75;
   resize: vertical;
-  background: var(--card-bg);
+  background: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-body);
   outline: none;
@@ -32,24 +32,24 @@
 
 .profile-content:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-light);
+  box-shadow: 0 0 0 2px rgba(108, 71, 255, 0.08);
 }
 
 .generate-container {
   text-align: center;
-  padding: 60px 20px;
+  padding: 48px 20px;
 }
 
 .generate-container p {
   color: var(--text-secondary);
-  margin-bottom: 24px;
-  font-size: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -61,11 +61,11 @@
 }
 
 .loading-shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--card-border) 50%, var(--bg-secondary) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: var(--card-radius);
-  height: 300px;
+  height: 280px;
 }
 
 @keyframes shimmer {
@@ -75,6 +75,6 @@
 
 .api-key-notice {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   margin-top: 8px;
 }
