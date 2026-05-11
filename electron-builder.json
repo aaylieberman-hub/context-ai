@@ -1,0 +1,14 @@
+{
+  "appId": "com.context-ai.app",
+  "productName": "context.ai",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*"
+  ],
+  "win": {
+    "target": "nsis"
+  }
+}
