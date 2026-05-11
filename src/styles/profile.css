@@ -1,0 +1,80 @@
+.profile-output {
+  max-width: 700px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.profile-actions .timestamp {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.profile-content {
+  width: 100%;
+  min-height: 400px;
+  padding: 24px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  font-size: 14px;
+  line-height: 1.8;
+  resize: vertical;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.profile-content:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.generate-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.generate-container p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--card-radius);
+  height: 300px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.api-key-notice {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 8px;
+}
