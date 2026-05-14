@@ -1,40 +1,130 @@
-.hero-banner {
-  background: var(--hero-gradient);
-  padding: 32px 36px;
-  margin: 24px 32px 0;
-  border-radius: 14px;
+/* ============================================================
+   HERO BANNER
+   ============================================================ */
+
+.hero-banner,
+[class*="hero-banner-"] {
   position: relative;
+  border-radius: 18px;
   overflow: hidden;
-}
-
-.hero-banner::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background:
-    radial-gradient(ellipse at 90% 10%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 90%, rgba(0, 0, 0, 0.15) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.hero-banner h2 {
-  font-family: var(--font-serif);
-  font-size: 24px;
-  font-weight: 400;
-  font-style: italic;
+  padding: 34px 38px;
+  margin: 0 20px 24px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  isolation: isolate;
   color: var(--hero-text);
-  margin-bottom: 8px;
-  position: relative;
-  line-height: 1.3;
 }
 
-.hero-banner p {
-  font-size: 13px;
-  color: rgba(254, 243, 226, 0.65);
-  max-width: 420px;
+/* Warm (brown/gold) — People, Free Text */
+.hero-banner-warm,
+.hero-banner {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #C58A4B 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 70% 70%, #7A3F2A 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 30% 50%, #2C1B14 0%, transparent 70%),
+    linear-gradient(120deg, #1A1410 0%, #2A1C14 50%, #4A2D1F 100%);
+}
+
+/* Dark (aubergine/purple) — Things */
+.hero-banner-dark {
+  background:
+    radial-gradient(ellipse 50% 70% at 75% 50%, #8E5AA8 0%, transparent 55%),
+    radial-gradient(ellipse 60% 80% at 60% 80%, #3F1C50 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 30%, #1F0F26 0%, transparent 60%),
+    linear-gradient(140deg, #14081A 0%, #2B1338 50%, #4F2670 100%);
+}
+
+/* Teal — Uploads */
+.hero-banner-teal {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #4BA8A0 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 65% 75%, #1C504A 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 35%, #0F2624 0%, transparent 70%),
+    linear-gradient(130deg, #0A1A18 0%, #133830 50%, #1F5F54 100%);
+}
+
+/* Sage (green) — Topics */
+.hero-banner-sage {
+  background:
+    radial-gradient(ellipse 60% 80% at 75% 45%, #7A9A5A 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 65% 75%, #3A4F2A 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 35%, #1A2414 0%, transparent 70%),
+    linear-gradient(125deg, #121A0E 0%, #253218 50%, #3D5A28 100%);
+}
+
+/* Blue — Snippets */
+.hero-banner-blue {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #5A7AB0 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 65% 75%, #2A3C5F 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 35%, #141C2C 0%, transparent 70%),
+    linear-gradient(130deg, #0E1420 0%, #1C2A44 50%, #2E4878 100%);
+}
+
+/* Rose — Style */
+.hero-banner-rose {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #B07A8A 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 65% 75%, #5F2A3C 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 35%, #2C141C 0%, transparent 70%),
+    linear-gradient(130deg, #1A0E14 0%, #3A1C28 50%, #6E3A4E 100%);
+}
+
+/* Navy — Profile */
+.hero-banner-navy {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #5A6AAE 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 65% 75%, #2A2C5F 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 25% 35%, #14142C 0%, transparent 70%),
+    linear-gradient(130deg, #0E0E20 0%, #1C1C44 50%, #2E2E78 100%);
+}
+
+/* Subtle grain overlay */
+.hero-banner::after,
+[class*="hero-banner-"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+
+.hero-banner h2,
+[class*="hero-banner-"] h2 {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: 10px;
+  max-width: 560px;
   position: relative;
+}
+
+.hero-banner h2 em,
+[class*="hero-banner-"] h2 em {
+  font-style: italic;
+  font-weight: 400;
+  color: #E8B560;
+}
+.hero-banner-dark h2 em { color: #D4A8E8; }
+.hero-banner-teal h2 em { color: #7EDCD4; }
+.hero-banner-sage h2 em { color: #B8D88A; }
+.hero-banner-blue h2 em { color: #8AAEE0; }
+.hero-banner-rose h2 em { color: #E8A8B8; }
+.hero-banner-navy h2 em { color: #A8AAE8; }
+
+.hero-banner p,
+[class*="hero-banner-"] p {
+  font-size: 14.5px;
+  color: rgba(244,239,230,0.78);
+  max-width: 500px;
   line-height: 1.5;
+  position: relative;
 }

@@ -1,41 +1,65 @@
+/* ============================================================
+   context.ai — DESIGN TOKENS
+   Warm parchment, aubergine accent, italic-serif accents.
+   ============================================================ */
+
 :root {
-  --sidebar-bg: #FFFFFF;
-  --sidebar-border: #F0F0F0;
-  --sidebar-text: #6B7280;
-  --sidebar-text-hover: #374151;
-  --sidebar-text-active: #111827;
-  --sidebar-active-bg: #F3F0FF;
-  --sidebar-width: 200px;
+  /* Surface tones */
+  --bg:              #F4EFE6;   /* main canvas */
+  --bg-secondary:    #FAF6EE;   /* sidebar / soft surfaces */
+  --bg-soft:         #F0EADD;
+  --card-bg:         #FFFFFF;
+  --card-border:     #E0D8C5;
+  --card-border-2:   #EBE3D2;
+  --card-radius:     14px;
 
-  --hero-gradient: linear-gradient(135deg, #C4944A 0%, #9A6B34 40%, #6B4423 70%, #3D2415 100%);
-  --hero-text: #FEF3E2;
+  /* Sidebar */
+  --sidebar-bg:        var(--bg-secondary);
+  --sidebar-border:    #EBE3D2;
+  --sidebar-text:      #3D362C;
+  --sidebar-text-hover:#1A1814;
+  --sidebar-text-active:#1A1814;
+  --sidebar-active-bg: #ECE3CF;
+  --sidebar-width:     232px;
 
-  --bg: #FFFFFF;
-  --bg-secondary: #FAFAFA;
-  --card-bg: #FFFFFF;
-  --card-border: #F0F0F0;
-  --card-radius: 12px;
+  /* Hero gradients (set on .hero-banner-* classes directly) */
+  --hero-gradient:
+    radial-gradient(ellipse 60% 80% at 80% 40%, #C58A4B 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 70% 70%, #7A3F2A 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 30% 50%, #2C1B14 0%, transparent 70%),
+    linear-gradient(120deg, #1A1410 0%, #2A1C14 50%, #4A2D1F 100%);
+  --hero-text: #F4EFE6;
 
-  --accent: #6C47FF;
-  --accent-hover: #5B38E8;
-  --accent-light: #F3F0FF;
-  --accent-text: #6C47FF;
+  /* Text */
+  --text-primary:   #1A1814;
+  --text-secondary: #3D362C;
+  --text-muted:     #6E6557;
+  --text-light:     #98907F;
 
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
-  --text-light: #D1D5DB;
+  /* Accent — deep aubergine */
+  --accent:         #5B2A6F;
+  --accent-hover:   #3F1C50;
+  --accent-light:   #EDE2F2;
+  --accent-text:    #5B2A6F;
+  --accent-ink:     #2C1238;
 
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --font-serif: Georgia, 'Times New Roman', serif;
+  /* Status */
+  --danger:         #B2522E;
+  --danger-hover:   #8E3F23;
+  --success:        #4F5A3B;
+  --sage:           #C8D4B0;
+  --sage-deep:      #4F5A3B;
+  --warm:           #E8B560;
 
-  --danger: #EF4444;
-  --danger-hover: #DC2626;
-  --success: #10B981;
+  /* Type */
+  --font-body:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Fraunces", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+  /* Shadows */
+  --shadow-sm: 0 1px 0 rgba(26,24,20,0.04);
+  --shadow-md: 0 4px 12px rgba(26,24,20,0.06);
+  --shadow-lg: 0 18px 40px -12px rgba(26,24,20,0.28);
 }
 
 * {
@@ -46,6 +70,7 @@
 
 body {
   font-family: var(--font-body);
+  font-feature-settings: "ss01", "cv11";
   background: var(--bg);
   color: var(--text-primary);
   line-height: 1.5;
@@ -63,25 +88,17 @@ body {
 button {
   cursor: pointer;
   font-family: var(--font-body);
+  border: none;
+  background: none;
+  color: inherit;
 }
 
 input, textarea, select {
   font-family: var(--font-body);
+  color: inherit;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--text-light);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D2C8B2; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

@@ -1,63 +1,190 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import { AppState, AppAction } from '../types'
+import { AppState, AppAction, StylesState, TopicKey, TopicEntry, FreeTextEntry } from '../types'
+import { getStorageKeyForAccount } from '../lib/accounts'
 
-const STORAGE_KEY = 'context-ai-state'
+const TOPIC_KEYS: TopicKey[] = [
+  'background', 'goals', 'currentProjects', 'communicationStyle',
+  'values', 'petPeeves', 'tools', 'availability', 'decisionStyle',
+]
 
-const defaultState: AppState = {
+export const defaultState: AppState = {
   aboutYou: {
-    freeText: '',
-    uploadedText: '',
-    uploadedFileName: '',
+    freeTexts: [],
+    uploads: [],
     form: {
       name: '',
+      pronouns: '',
+      location: '',
+      age: '',
       role: '',
       goals: '',
       communicationStyle: '',
       background: '',
       currentProjects: '',
+      values: '',
+      petPeeves: '',
+      tools: '',
+      availability: '',
+      decisionStyle: '',
     },
+    topics: {
+      background: [],
+      goals: [],
+      currentProjects: [],
+      communicationStyle: [],
+      values: [],
+      petPeeves: [],
+      tools: [],
+      availability: [],
+      decisionStyle: [],
+    },
+    quizPrompt: '',
+    quizQuestions: [],
   },
   people: [],
-  profile: {
-    content: '',
-    generatedAt: null,
-  },
+  things: [],
+  snippets: [],
+  styles: {
+    personal: { label: '', tone: '', examples: '', notes: '' },
+    work: { label: '', tone: '', examples: '', notes: '' },
+    email: { label: '', tone: '', examples: '', notes: '' },
+    social: { label: '', tone: '', examples: '', notes: '' },
+    other: { label: '', tone: '', examples: '', notes: '' },
+  } as StylesState,
+  profiles: [],
   settings: {
     apiKey: '',
   },
 }
 
-function loadState(): AppState {
+function migrateTopics(raw: any): Record<TopicKey, TopicEntry[]> {
+  const result: Record<string, TopicEntry[]> = {}
+  for (const key of TOPIC_KEYS) {
+    const val = raw?.[key]
+    if (Array.isArray(val)) {
+      result[key] = val
+    } else if (val && typeof val === 'object' && val.content?.trim()) {
+      result[key] = [{
+        id: `migrated-${key}`,
+        label: key.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase()).trim(),
+        content: val.content,
+        createdAt: val.completedAt || new Date().toISOString(),
+      }]
+    } else {
+      result[key] = []
+    }
+  }
+  return result as Record<TopicKey, TopicEntry[]>
+}
+
+function migratePeople(raw: any[]): any[] {
+  return raw.map((p) => ({
+    ...p,
+    notes: p.notes || [],
+    stylePreference: p.stylePreference || '',
+  }))
+}
+
+export function loadStateForAccount(accountId: string): AppState {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const key = getStorageKeyForAccount(accountId)
+    const stored = localStorage.getItem(key)
     if (stored) {
-      return { ...defaultState, ...JSON.parse(stored) }
+      const parsed = JSON.parse(stored)
+      const aboutYou = parsed.aboutYou || {}
+      let freeTexts: FreeTextEntry[] = aboutYou.freeTexts || []
+      if (freeTexts.length === 0 && aboutYou.freeText?.trim()) {
+        freeTexts = [{ id: 'migrated-1', content: aboutYou.freeText, createdAt: new Date().toISOString() }]
+      }
+      return {
+        ...defaultState,
+        ...parsed,
+        aboutYou: {
+          ...defaultState.aboutYou,
+          ...aboutYou,
+          freeTexts,
+          form: { ...defaultState.aboutYou.form, ...(aboutYou.form || {}) },
+          topics: migrateTopics(aboutYou.topics),
+          uploads: aboutYou.uploads || [],
+        },
+        people: migratePeople(parsed.people || []),
+        styles: { ...defaultState.styles, ...(parsed.styles || {}) },
+      }
     }
   } catch {
-    // ignore parse errors
+    // ignore
   }
   return defaultState
 }
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
-    case 'SET_FREE_TEXT':
-      return { ...state, aboutYou: { ...state.aboutYou, freeText: action.payload } }
-    case 'SET_UPLOADED_TEXT':
-      return {
-        ...state,
-        aboutYou: {
-          ...state.aboutYou,
-          uploadedText: action.payload.text,
-          uploadedFileName: action.payload.fileName,
-        },
-      }
+    case 'ADD_FREE_TEXT':
+      return { ...state, aboutYou: { ...state.aboutYou, freeTexts: [...state.aboutYou.freeTexts, action.payload] } }
+    case 'UPDATE_FREE_TEXT':
+      return { ...state, aboutYou: { ...state.aboutYou, freeTexts: state.aboutYou.freeTexts.map((ft) => ft.id === action.payload.id ? action.payload : ft) } }
+    case 'DELETE_FREE_TEXT':
+      return { ...state, aboutYou: { ...state.aboutYou, freeTexts: state.aboutYou.freeTexts.filter((ft) => ft.id !== action.payload) } }
+    case 'ADD_UPLOAD':
+      return { ...state, aboutYou: { ...state.aboutYou, uploads: [...state.aboutYou.uploads, action.payload] } }
+    case 'DELETE_UPLOAD':
+      return { ...state, aboutYou: { ...state.aboutYou, uploads: state.aboutYou.uploads.filter((u) => u.id !== action.payload) } }
     case 'SET_FORM_FIELD':
       return {
         ...state,
         aboutYou: {
           ...state.aboutYou,
           form: { ...state.aboutYou.form, [action.payload.field]: action.payload.value },
+        },
+      }
+    case 'ADD_TOPIC_ENTRY': {
+      const entries = state.aboutYou.topics[action.payload.key]
+      return {
+        ...state,
+        aboutYou: {
+          ...state.aboutYou,
+          topics: { ...state.aboutYou.topics, [action.payload.key]: [...entries, action.payload.entry] },
+        },
+      }
+    }
+    case 'UPDATE_TOPIC_ENTRY': {
+      const entries = state.aboutYou.topics[action.payload.key]
+      return {
+        ...state,
+        aboutYou: {
+          ...state.aboutYou,
+          topics: {
+            ...state.aboutYou.topics,
+            [action.payload.key]: entries.map((e) => e.id === action.payload.entry.id ? action.payload.entry : e),
+          },
+        },
+      }
+    }
+    case 'DELETE_TOPIC_ENTRY': {
+      const entries = state.aboutYou.topics[action.payload.key]
+      return {
+        ...state,
+        aboutYou: {
+          ...state.aboutYou,
+          topics: {
+            ...state.aboutYou.topics,
+            [action.payload.key]: entries.filter((e) => e.id !== action.payload.entryId),
+          },
+        },
+      }
+    }
+    case 'SET_QUIZ_PROMPT':
+      return { ...state, aboutYou: { ...state.aboutYou, quizPrompt: action.payload } }
+    case 'SET_QUIZ_QUESTIONS':
+      return { ...state, aboutYou: { ...state.aboutYou, quizQuestions: action.payload } }
+    case 'SET_QUIZ_ANSWER':
+      return {
+        ...state,
+        aboutYou: {
+          ...state.aboutYou,
+          quizQuestions: state.aboutYou.quizQuestions.map((q) =>
+            q.id === action.payload.id ? { ...q, answer: action.payload.answer } : q
+          ),
         },
       }
     case 'ADD_PERSON':
@@ -69,10 +196,66 @@ function appReducer(state: AppState, action: AppAction): AppState {
       }
     case 'DELETE_PERSON':
       return { ...state, people: state.people.filter((p) => p.id !== action.payload) }
-    case 'SET_PROFILE':
-      return { ...state, profile: action.payload }
-    case 'CLEAR_PROFILE':
-      return { ...state, profile: { content: '', generatedAt: null } }
+    case 'ADD_PERSON_NOTE':
+      return {
+        ...state,
+        people: state.people.map((p) =>
+          p.id === action.payload.personId
+            ? { ...p, notes: [...p.notes, action.payload.note] }
+            : p
+        ),
+      }
+    case 'DELETE_PERSON_NOTE':
+      return {
+        ...state,
+        people: state.people.map((p) =>
+          p.id === action.payload.personId
+            ? { ...p, notes: p.notes.filter((n) => n.id !== action.payload.noteId) }
+            : p
+        ),
+      }
+    case 'SET_PERSON_STYLE':
+      return {
+        ...state,
+        people: state.people.map((p) =>
+          p.id === action.payload.personId
+            ? { ...p, stylePreference: action.payload.stylePreference }
+            : p
+        ),
+      }
+    case 'ADD_THING':
+      return { ...state, things: [...state.things, action.payload] }
+    case 'UPDATE_THING':
+      return {
+        ...state,
+        things: state.things.map((t) => (t.id === action.payload.id ? action.payload : t)),
+      }
+    case 'DELETE_THING':
+      return { ...state, things: state.things.filter((t) => t.id !== action.payload) }
+    case 'ADD_PROFILE':
+      return { ...state, profiles: [action.payload, ...state.profiles] }
+    case 'DELETE_PROFILE':
+      return { ...state, profiles: state.profiles.filter((p) => p.id !== action.payload) }
+    case 'ADD_SNIPPET':
+      return { ...state, snippets: [...state.snippets, action.payload] }
+    case 'UPDATE_SNIPPET':
+      return {
+        ...state,
+        snippets: state.snippets.map((s) => (s.id === action.payload.id ? action.payload : s)),
+      }
+    case 'DELETE_SNIPPET':
+      return { ...state, snippets: state.snippets.filter((s) => s.id !== action.payload) }
+    case 'SET_STYLE_FIELD':
+      return {
+        ...state,
+        styles: {
+          ...state.styles,
+          [action.payload.category]: {
+            ...state.styles[action.payload.category],
+            [action.payload.field]: action.payload.value,
+          },
+        },
+      }
     case 'SET_API_KEY':
       return { ...state, settings: { ...state.settings, apiKey: action.payload } }
     default:
@@ -87,12 +270,13 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null)
 
-export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(appReducer, undefined, loadState)
+export function AppProvider({ children, accountId }: { children: React.ReactNode; accountId: string }) {
+  const [state, dispatch] = useReducer(appReducer, accountId, loadStateForAccount)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [state])
+    const key = getStorageKeyForAccount(accountId)
+    localStorage.setItem(key, JSON.stringify(state))
+  }, [state, accountId])
 
   return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>
 }

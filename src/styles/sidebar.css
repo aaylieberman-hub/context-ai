@@ -1,3 +1,7 @@
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
 .sidebar {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
@@ -6,39 +10,46 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 16px 0;
+  padding: 18px 14px 14px;
   user-select: none;
 }
 
 .sidebar-brand {
-  padding: 4px 16px 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 4px 8px 18px;
 }
 
 .sidebar-brand-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--accent);
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 .sidebar-brand h1 {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
+}
+.sidebar-brand h1 .dot-ai {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
 }
 
 .sidebar-brand .badge {
-  background: var(--accent);
-  color: white;
-  font-size: 9px;
-  padding: 1px 5px;
-  border-radius: 3px;
+  margin-left: 2px;
+  font-size: 10px;
   font-weight: 600;
-  text-transform: capitalize;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  background: var(--sage);
+  padding: 3px 7px 2px;
+  border-radius: 999px;
 }
 
 .sidebar-nav {
@@ -46,78 +57,158 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  padding: 0 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 10px;
-  color: var(--sidebar-text);
-  font-size: 13px;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  font-size: 13.5px;
   font-weight: 500;
-  border: none;
-  background: none;
-  width: 100%;
+  color: var(--sidebar-text);
   text-align: left;
-  border-radius: 6px;
-  transition: all 0.1s ease;
+  width: 100%;
+  transition: background 0.15s, color 0.15s;
 }
 
 .sidebar-nav-item:hover {
+  background: var(--card-border-2);
   color: var(--sidebar-text-hover);
-  background: var(--bg-secondary);
 }
 
 .sidebar-nav-item.active {
-  color: var(--sidebar-text-active);
   background: var(--sidebar-active-bg);
-  font-weight: 600;
+  color: var(--sidebar-text-active);
 }
 
 .sidebar-nav-item svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  opacity: 0.65;
+  color: currentColor;
 }
 
 .sidebar-nav-item.active svg {
-  opacity: 1;
   color: var(--accent);
 }
 
+.sidebar-sub-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 2px 0 4px 18px;
+  padding-left: 12px;
+  border-left: 1px solid var(--card-border);
+}
+
+.sidebar-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 450;
+  color: var(--text-muted);
+  text-align: left;
+  width: 100%;
+}
+.sidebar-sub-item::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.sidebar-sub-item:hover {
+  background: var(--card-border-2);
+  color: var(--text-primary);
+}
+
+.sidebar-sub-item.active {
+  color: var(--text-primary);
+  font-weight: 550;
+}
+.sidebar-sub-item.active::before {
+  background: var(--accent);
+  opacity: 1;
+}
+
+/* Hide old SVG-based sub-item icons if any TSX still renders them */
+.sidebar-sub-item svg { display: none; }
+
 .sidebar-bottom {
-  padding: 12px 8px 0;
   border-top: 1px solid var(--sidebar-border);
-  margin-top: auto;
+  margin-top: 12px;
+  padding-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
 
-.sidebar-trial {
-  padding: 12px 16px 16px;
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.sidebar-upgrade {
-  margin: 0 8px 12px;
-  padding: 8px 0;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--sidebar-border);
+  border-radius: 9px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s;
+}
+.sidebar-account:hover { background: var(--card-border-2); }
+
+.sidebar-account-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5B2A6F, #8E5AA8);
+  color: var(--bg-secondary);
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.sidebar-upgrade:hover {
-  background: var(--accent-hover);
+.sidebar-account-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-account-logout {
+  width: 26px;
+  height: 26px;
+  background: none;
+  color: var(--text-muted);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.sidebar-account-logout:hover {
+  background: var(--card-border);
+  color: var(--text-primary);
+}
+.sidebar-account-logout svg {
+  width: 14px;
+  height: 14px;
 }
