@@ -85,8 +85,16 @@ function migratePeople(raw: any[]): any[] {
   }))
 }
 
+function loadApiKey(): string {
+  try { return localStorage.getItem('context-ai-api-key') || '' } catch { return '' }
+}
+
+function saveApiKey(key: string) {
+  try { localStorage.setItem('context-ai-api-key', key) } catch {}
+}
+
 export function hydrateState(parsed: any): AppState {
-  if (!parsed) return defaultState
+  if (!parsed) return { ...defaultState, settings: { apiKey: loadApiKey() } }
   const aboutYou = parsed.aboutYou || {}
   let freeTexts: FreeTextEntry[] = aboutYou.freeTexts || []
   if (freeTexts.length === 0 && aboutYou.freeText?.trim()) {
@@ -105,6 +113,7 @@ export function hydrateState(parsed: any): AppState {
     },
     people: migratePeople(parsed.people || []),
     styles: { ...defaultState.styles, ...(parsed.styles || {}) },
+    settings: { apiKey: loadApiKey() },
   }
 }
 
@@ -248,6 +257,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
         },
       }
     case 'SET_API_KEY':
+      saveApiKey(action.payload)
       return { ...state, settings: { ...state.settings, apiKey: action.payload } }
     default:
       return state

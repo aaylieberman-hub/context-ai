@@ -11,5 +11,6 @@ export async function loadUserState(uid: string): Promise<AppState | null> {
 }
 
 export async function saveUserState(uid: string, state: AppState): Promise<void> {
-  await setDoc(doc(db, 'users', uid), JSON.parse(JSON.stringify(state)))
+  const { settings, ...rest } = state
+  await setDoc(doc(db, 'users', uid), JSON.parse(JSON.stringify(rest)))
 }
