@@ -9,6 +9,8 @@
     "dist-electron/**/*"
   ],
   "win": {
-    "target": "nsis"
+    "target": "portable",
+    "icon": null,
+    "signAndEditExecutable": false
   }
 }

@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 import { AppState, AppAction, StylesState, TopicKey, TopicEntry, FreeTextEntry } from '../types'
-import { getStorageKeyForAccount } from '../lib/accounts'
+import { saveUserState } from '../lib/firestore'
 
 const TOPIC_KEYS: TopicKey[] = [
   'background', 'goals', 'currentProjects', 'communicationStyle',
@@ -85,36 +85,27 @@ function migratePeople(raw: any[]): any[] {
   }))
 }
 
-export function loadStateForAccount(accountId: string): AppState {
-  try {
-    const key = getStorageKeyForAccount(accountId)
-    const stored = localStorage.getItem(key)
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      const aboutYou = parsed.aboutYou || {}
-      let freeTexts: FreeTextEntry[] = aboutYou.freeTexts || []
-      if (freeTexts.length === 0 && aboutYou.freeText?.trim()) {
-        freeTexts = [{ id: 'migrated-1', content: aboutYou.freeText, createdAt: new Date().toISOString() }]
-      }
-      return {
-        ...defaultState,
-        ...parsed,
-        aboutYou: {
-          ...defaultState.aboutYou,
-          ...aboutYou,
-          freeTexts,
-          form: { ...defaultState.aboutYou.form, ...(aboutYou.form || {}) },
-          topics: migrateTopics(aboutYou.topics),
-          uploads: aboutYou.uploads || [],
-        },
-        people: migratePeople(parsed.people || []),
-        styles: { ...defaultState.styles, ...(parsed.styles || {}) },
-      }
-    }
-  } catch {
-    // ignore
+export function hydrateState(parsed: any): AppState {
+  if (!parsed) return defaultState
+  const aboutYou = parsed.aboutYou || {}
+  let freeTexts: FreeTextEntry[] = aboutYou.freeTexts || []
+  if (freeTexts.length === 0 && aboutYou.freeText?.trim()) {
+    freeTexts = [{ id: 'migrated-1', content: aboutYou.freeText, createdAt: new Date().toISOString() }]
   }
-  return defaultState
+  return {
+    ...defaultState,
+    ...parsed,
+    aboutYou: {
+      ...defaultState.aboutYou,
+      ...aboutYou,
+      freeTexts,
+      form: { ...defaultState.aboutYou.form, ...(aboutYou.form || {}) },
+      topics: migrateTopics(aboutYou.topics),
+      uploads: aboutYou.uploads || [],
+    },
+    people: migratePeople(parsed.people || []),
+    styles: { ...defaultState.styles, ...(parsed.styles || {}) },
+  }
 }
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -270,13 +261,17 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null)
 
-export function AppProvider({ children, accountId }: { children: React.ReactNode; accountId: string }) {
-  const [state, dispatch] = useReducer(appReducer, accountId, loadStateForAccount)
+export function AppProvider({ children, uid, initialState }: { children: React.ReactNode; uid: string; initialState: AppState }) {
+  const [state, dispatch] = useReducer(appReducer, initialState)
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const key = getStorageKeyForAccount(accountId)
-    localStorage.setItem(key, JSON.stringify(state))
-  }, [state, accountId])
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => {
+      saveUserState(uid, state).catch(() => {})
+    }, 1000)
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
+  }, [state, uid])
 
   return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>
 }

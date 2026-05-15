@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { AppProvider } from './context/AppContext'
+import { onAuthStateChanged, User, signOut } from 'firebase/auth'
+import { auth } from './lib/firebase'
+import { loadUserState } from './lib/firestore'
+import { AppProvider, defaultState, hydrateState } from './context/AppContext'
 import { useApp } from './context/AppContext'
 import { Sidebar } from './components/Sidebar'
 import { SettingsModal } from './components/SettingsModal'
@@ -10,48 +13,28 @@ import { Profile } from './screens/Profile'
 import { Style } from './screens/Style'
 import { Login } from './screens/Login'
 import { Chat } from './screens/Chat'
-import { AccountProfile } from './types'
-import { getAccounts, getActiveAccountId, setActiveAccount, clearActiveAccount, migrateOldData } from './lib/accounts'
+import { AppState } from './types'
 import './styles/global.css'
 import './styles/forms.css'
 
-function AccountSync({ account }: { account: AccountProfile }) {
-  const { state, dispatch } = useApp()
-  useEffect(() => {
-    if (!state.aboutYou.form.name && account.name) {
-      dispatch({ type: 'SET_FORM_FIELD', payload: { field: 'name', value: account.name } })
-    }
-    if (!state.aboutYou.form.age && account.age) {
-      dispatch({ type: 'SET_FORM_FIELD', payload: { field: 'age', value: account.age } })
-    }
-    const details = account.stageDetails || {}
-    if (!state.aboutYou.form.role) {
-      const role = details.position
-        ? `${details.position}${details.company ? ` at ${details.company}` : ''}`
-        : details.major
-        ? `${details.major} student${details.school ? ` at ${details.school}` : ''}`
-        : details.school
-        ? `Student at ${details.school}`
-        : ''
-      if (role) dispatch({ type: 'SET_FORM_FIELD', payload: { field: 'role', value: role } })
-    }
-  }, [])
-  return null
-}
-
-function MainApp({ account, onLogout }: { account: AccountProfile; onLogout: () => void }) {
+function MainApp({ user, initialState }: { user: User; initialState: AppState }) {
   const [activeScreen, setActiveScreen] = useState('chat')
   const [showSettings, setShowSettings] = useState(false)
 
+  function handleLogout() {
+    signOut(auth)
+  }
+
+  const displayName = user.displayName || user.email || 'User'
+
   return (
-    <AppProvider accountId={account.id}>
-      <AccountSync account={account} />
+    <AppProvider uid={user.uid} initialState={initialState}>
       <Sidebar
         activeScreen={activeScreen}
         onNavigate={setActiveScreen}
         onOpenSettings={() => setShowSettings(true)}
-        accountName={account.name}
-        onLogout={onLogout}
+        accountName={displayName}
+        onLogout={handleLogout}
       />
       <div className="content-area">
         {activeScreen === 'chat' && <Chat />}
@@ -69,34 +52,35 @@ function MainApp({ account, onLogout }: { account: AccountProfile; onLogout: () 
 }
 
 export function App() {
-  const [account, setAccount] = useState<AccountProfile | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [initialState, setInitialState] = useState<AppState | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const migrated = migrateOldData()
-    if (migrated) {
-      setAccount(migrated)
-      return
-    }
-    const activeId = getActiveAccountId()
-    if (activeId) {
-      const found = getAccounts().find((a) => a.id === activeId)
-      if (found) setAccount(found)
-    }
+    return onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const saved = await loadUserState(firebaseUser.uid)
+        setInitialState(saved ? hydrateState(saved) : defaultState)
+        setUser(firebaseUser)
+      } else {
+        setUser(null)
+        setInitialState(null)
+      }
+      setLoading(false)
+    })
   }, [])
 
-  function handleLogin(acc: AccountProfile) {
-    setActiveAccount(acc.id)
-    setAccount(acc)
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', color: 'var(--text-muted)', fontSize: '14px' }}>
+        Loading...
+      </div>
+    )
   }
 
-  function handleLogout() {
-    clearActiveAccount()
-    setAccount(null)
+  if (!user || !initialState) {
+    return <Login />
   }
 
-  if (!account) {
-    return <Login onLogin={handleLogin} />
-  }
-
-  return <MainApp key={account.id} account={account} onLogout={handleLogout} />
+  return <MainApp key={user.uid} user={user} initialState={initialState} />
 }
